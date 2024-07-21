@@ -34,6 +34,9 @@ GROUP BY
 	Country;
 
 ```
+![MPs question 1](https://github.com/user-attachments/assets/5abac410-675a-47e9-bd26-118b9f6ea372)
+
+
 The allocation of seats between each of the nations of the UK is calculated based on the proportion of the UK registered electorate. There are also periodically reviews reagarding the constituencies boundaries, resulting in necessary changes.
 
 2 - Most popular party by region
@@ -62,10 +65,14 @@ WHERE RK = 1
 ORDER BY Quantity_of_MPs DESC;
 
 ```
+![MPs question 2](https://github.com/user-attachments/assets/4fa4fec9-df5d-443a-bfe5-a886eb183759)
+
 > [!NOTE]
 >It is important to keep in mind the period 2022-2023, prior to the 2024 general election, when the Conservative Party suffered a major defeat. The North-South line is also clear between the two parties, Conservative and Labor.
 
 3 - Standard budgets (The following tables with standard values, without budget adjustment to a time period or further request, were createad and the codes used for it can be found on the SQL scripts folder)
+
+![MPs question 7(3)](https://github.com/user-attachments/assets/f3928e80-9617-457e-a8cc-6b4abb74ceef)
 
 + Members of Parliament representing constituencies in the London area are provided with higher budgets, as the costs are also higher in the English capital.
 + Among the four budgets provided to the MPs, staffing is the highest one - £221,750 for non-London areas and £237,430 for London areas. To assist in their parliamentary work, each MP employs an average of four employees.
@@ -99,8 +106,10 @@ FROM MPsExpenditure
 
 ```
 
+![MPs question 3](https://github.com/user-attachments/assets/4fe459c7-6250-469c-8b49-afbb8146e2dd)
+
 + Not only were none of the budgets spent completely, but there was a significant remaining for all budgets, the highest being the office allowance.
-+ Although it can be subject of judgement, travels (under the uncapped spend) can also be claimed for MPs spouse, partner and dependants, > again so that they can maintain their family life and care for their dependants, according to [IPSA] (https://www.theipsa.org.uk/news/what-do-mps-spend-public-money-on).
++ Although it can be subject of judgement, travels (under the uncapped spend) can also be claimed for MPs spouse, partner and dependants, > again so that they can maintain their family life and care for their dependants, according to [IPSA](https://www.theipsa.org.uk/news/what-do-mps-spend-public-money-on).
 26% Office, 16% Staffing, 23% Accommodation
 
 5 - MPs who did not meet the budget
@@ -146,6 +155,8 @@ WHERE [Meet_the_budget?] LIKE ('MP did not meet the budget');
 
 ```
 
+![MPs question 4](https://github.com/user-attachments/assets/c3ac90b3-2bdf-4ea4-a4cf-44bb97296ffb)
+
 By the following code it is possible to see where the MP overspent.
 
 ```
@@ -172,6 +183,8 @@ FROM MPsExpenditure
 WHERE MPID = 1392
 
 ```
+
+![MPs question 4 1](https://github.com/user-attachments/assets/74033556-aeb4-4afb-9fd6-59128c06d73b)
 
 Only one MP did not meet the budget and the overspending occurred in the office budget, by 6.7%.
 
@@ -200,6 +213,10 @@ GROUP BY
 ORDER BY [Total_Spent] DESC;
 
 ```
+
+![MPs question 5](https://github.com/user-attachments/assets/3f0a323b-210d-402d-bcbc-eb4134ae09ad)
+
+
 In the list above we have 8 MPs from England constituencies, 1 from Northern Ireland and 1 from Scotland; 3 MPs filliated to the Conservative party, 2 to the Labour and 1 to the Labour/Co-operative, 2 to the Independent, 1 to the Scottish National Party and lastly, but in third place in the top 10, 1 MP filliated to the Social Democratic and Labour Party.
 
 7 - Maximum spent by category
@@ -303,5 +320,8 @@ GROUP BY
 ORDER BY [Max_spent] DESC;
 
 ```
+
+![MPs question 6](https://github.com/user-attachments/assets/95f0459e-8972-4561-9726-0edfbca5436c)
+
 
 The result shows how nearly all the expenses are related to the London area. The exception to this happens in the uncapped expenses, where all MPs represent Scottish constituencies. It could be safe to say that the distance plays an important role in the travel expenses.
