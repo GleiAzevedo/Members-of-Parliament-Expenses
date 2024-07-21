@@ -109,8 +109,7 @@ FROM MPsExpenditure
 ![MPs question 3](https://github.com/user-attachments/assets/4fe459c7-6250-469c-8b49-afbb8146e2dd)
 
 + Not only were none of the budgets spent completely, but there was a significant remaining for all budgets, the highest being the office allowance.
-+ Although it can be subject of judgement, travels (under the uncapped spend) can also be claimed for MPs spouse, partner and dependants, > again so that they can maintain their family life and care for their dependants, according to [IPSA](https://www.theipsa.org.uk/news/what-do-mps-spend-public-money-on).
-26% Office, 16% Staffing, 23% Accommodation
++ Although it can be subject of judgement, travels (under the uncapped spend) can also be claimed for MPs spouse, partner and dependants, again so that they can maintain their family life and care for their dependants, according to [IPSA](https://www.theipsa.org.uk/news/what-do-mps-spend-public-money-on).
 
 5 - MPs who did not meet the budget
 
