@@ -21,16 +21,14 @@ FROM MPs
 SELECT *
 FROM Regions
 
--- Quantity of Members of Parliament by region and country
+-- Quantity of Members of Parliament by country
 
 SELECT 
 	COUNT(MPID) AS [Quantity],
-	Region,
 	Country
 FROM Regions AS r
 	INNER JOIN MPsExpenditure AS mpe ON r.ConstituencyID = mpe.ConstituencyID
 GROUP BY
-	Region,
 	Country;
 
 -- Quantity of Members of Parliament by party
@@ -68,7 +66,7 @@ WITH Party_cte AS (
 		Party,
 		Region
 )
-SELECT
+SELECT TOP 10
 	Party,
 	Region,
 	Quantity_of_MPs
@@ -93,29 +91,26 @@ FROM MPsExpenditure AS mpe
 --Total budget and total spent
 
 SELECT
-	SUM(Office_Budget+Staffing_Budget+Winding_up_Budget+Accommodation_Budget) AS [Total_budget],
-	SUM(Office_Budget) AS [Office_budget],
-	SUM(Staffing_budget) AS [Staffing_budget],
-	SUM(Winding_up_Budget) AS [Winding_up_budget],
-	SUM(Accommodation_budget) AS [Accommodation_budget],
-	SUM(Office_spend+Staffing_spend+Winding_up_spend+Accommodation_spend
-		+Travel_and_subsistence_uncapped
-		+Other_costs_uncapped) AS [Total_spend_plus_uncapped],
-	SUM(Office_spend) AS [Office_spend],
-	SUM(Staffing_spend) AS [Staffing_spend],
-	SUM(Winding_up_spend) AS [Winding_up_spend],
-	SUM(Accommodation_spend) AS [Accommodation_spend]
+	FORMAT(SUM(Office_Budget+Staffing_Budget+Winding_up_Budget+Accommodation_Budget),'C','en-gb') AS [Total_budget],
+	FORMAT(SUM(Office_spend+Staffing_spend+Winding_up_spend+Accommodation_spend+Travel_and_subsistence_uncapped+Other_costs_uncapped),'C','en-gb') AS [Total_spend_plus_uncapped],
+	FORMAT(SUM(Office_Budget),'C','en-gb') AS [Office_budget],
+	FORMAT(SUM(Office_spend),'C','en-gb') AS [Office_spend],
+	FORMAT(SUM(Staffing_budget),'C','en-gb') AS [Staffing_budget],
+	FORMAT(SUM(Staffing_spend),'C','en-gb') AS [Staffing_spend],
+	FORMAT(SUM(Winding_up_Budget),'C','en-gb') AS [Winding_up_budget],
+	FORMAT(SUM(Winding_up_spend),'C','en-gb') AS [Winding_up_spend],
+	FORMAT(SUM(Accommodation_budget),'C','en-gb') AS [Accommodation_budget],
+	FORMAT(SUM(Accommodation_spend),'C','en-gb') AS [Accommodation_spend],
+	FORMAT(SUM(Travel_and_subsistence_uncapped+Other_costs_uncapped),'C','en-gb') AS [Uncapped_spend]
 FROM MPsExpenditure;
 
---Average spent by party in office
+-- Remaining
 
 SELECT
-	MPname,
-	Party,
-	Office_spend,
-	ROUND(AVG(Office_spend) OVER (PARTITION BY Party),2) AS [Avg_spend]
-FROM MPsExpenditure AS mpe
-	INNER JOIN MPs AS m ON mpe.MPID = m.MPID
+	FORMAT(SUM(Remaining_office_budget),'C','en-gb') AS Remaining_office_budget,
+	FORMAT(SUM(Remaining_staffing_budget),'C','en-gb') AS Remaining_staffing_budget,
+	FORMAT(SUM(Remaining_accommodation_budget),'C','en-gb') AS Remaining_accommodation_budget
+FROM MPsExpenditure;
 
 --MPs who did not meet the budget
 
@@ -157,6 +152,29 @@ SELECT *
 FROM Total2_cte
 WHERE [Meet_the_budget?] LIKE ('MP did not meet the budget');
 
+
+SELECT
+	SpendID,
+	MPID,
+	CASE
+		WHEN Remaining_office_budget < 0 THEN CAST(Remaining_office_budget AS varchar)
+		ELSE CONCAT('Not overspent - ',CAST(Remaining_office_budget AS varchar))
+	END AS 'Overspent_on_the_office_budget?',
+	CASE
+		WHEN Remaining_staffing_budget < 0 THEN CAST(Remaining_staffing_budget AS varchar)
+		ELSE CONCAT('Not overspent - ',CAST(Remaining_staffing_budget AS varchar))
+	END AS 'Overspent_on_the_staffing_budget?',
+	CASE
+		WHEN Remaining_accommodation_budget < 0 THEN CAST(Remaining_accommodation_budget AS varchar)
+		ELSE CONCAT('Not overspent - ',CAST(Remaining_accommodation_budget AS varchar))
+	END AS 'Overspent_on_the_accommodation_budget?',
+	CASE
+		WHEN Remaining_winding_up_budget < 0 THEN CAST(Remaining_winding_up_budget AS varchar)
+		ELSE CONCAT('Not overspent - ',CAST(Remaining_winding_up_budget AS varchar)) 
+	END AS 'Overspent_on_the_winding_up_budget?'
+FROM MPsExpenditure
+WHERE MPID = 1392
+
 -- Top 10 MPs in total expenditure
 
 SELECT
@@ -179,74 +197,103 @@ GROUP BY
 	r.Country
 ORDER BY [Total_Spent] DESC;
 
+
 -- Maximum spent by category
 
 	--Office
-SELECT TOP 1
+SELECT TOP 3
 	mp.MPID,
 	MPName,
 	Party,
+	Constituency,
+	Region,
+	Country,
 	Office_Budget,
 	ROUND(MAX(Office_Spend),2) AS [Max_spent],
 	Reason_for_office_budget_set
 FROM MPsExpenditure AS mpe
 	INNER JOIN MPs AS mp ON mpe.MPID = mp.MPID
+	INNER JOIN Regions AS rg ON mpe.ConstituencyID = rg.ConstituencyID
 GROUP BY
 	mp.MPID,
 	MPName,
 	Party,
+	Constituency,
+	Country,
+	Region,
 	Office_Budget,
 	Reason_for_office_budget_set
 ORDER BY [Max_spent] DESC;
 
 	--Staffing
-SELECT TOP 1
+SELECT TOP 3
 	mp.MPID,
 	MPName,
 	Party,
+	Constituency,
+	Region,
+	Country,
 	Staffing_Budget,
 	ROUND(MAX(Staffing_spend),2) AS [Max_spent],
 	Reason_for_staffing_budget_set
 FROM MPsExpenditure AS mpe
 	INNER JOIN MPs AS mp ON mpe.MPID = mp.MPID
+	INNER JOIN Regions AS rg ON mpe.ConstituencyID = rg.ConstituencyID
 GROUP BY
 	mp.MPID,
 	MPName,
 	Party,
+	Constituency,
+	Region,
+	Country,
 	Staffing_Budget,
 	Reason_for_staffing_budget_set
 ORDER BY [Max_spent] DESC;
 
 	--Accommodation
-SELECT TOP 1
+SELECT TOP 3
 	mp.MPID,
 	MPName,
 	Party,
+	Constituency,
+	Region,
+	Country,
 	Accommodation_Budget,
 	ROUND(MAX(Accommodation_spend),2) AS [Max_spent],
 	Reason_for_accommodation_budget_set
 FROM MPsExpenditure AS mpe
 	INNER JOIN MPs AS mp ON mpe.MPID = mp.MPID
+	INNER JOIN Regions AS rg ON mpe.ConstituencyID = rg.ConstituencyID
 GROUP BY
 	mp.MPID,
 	MPName,
 	Party,
+	Constituency,
+	Region,
+	Country,
 	Accommodation_Budget,
 	Reason_for_accommodation_budget_set
 ORDER BY [Max_spent] DESC;
 
 	--Uncapped
-SELECT TOP 1
+SELECT TOP 3
 	mp.MPID,
 	MPName,
 	Party,
+	Constituency,
+	Region,
+	Country,
 	ROUND(MAX(Travel_and_subsistence_uncapped + Other_costs_uncapped),2) AS [Max_spent]
 FROM MPsExpenditure AS mpe
 	INNER JOIN MPs AS mp ON mpe.MPID = mp.MPID
+	INNER JOIN Regions AS rg ON mpe.ConstituencyID = rg.ConstituencyID
 GROUP BY
 	mp.MPID,
 	MPName,
-	Party
+	Party,
+	Constituency,
+	Region,
+	Country
 ORDER BY [Max_spent] DESC;
 
 --Creation of budget tables with standard values (without budget adjustment to a time period or further requests)
@@ -274,11 +321,11 @@ FROM Office_budget_cte
 
 	--See the tables
 SELECT *
-FROM Accommodation_Budget
-SELECT *
 FROM Office_Budget
 SELECT *
 FROM Staffing_Budget
+SELECT *
+FROM Accommodation_Budget
 SELECT *
 FROM Winding_up_Budget
 
@@ -331,9 +378,6 @@ CREATE TABLE Accommodation_Budget (
 	Budget_accommodation float
 )
 
-ALTER TABLE Accommodation_Budget
-ALTER COLUMN Reason_for_accommodation_budget_set nvarchar(max)
-
 INSERT INTO Accommodation_Budget (Reason_for_accommodation_budget_set, Budget_accommodation)
 SELECT
 	Reason_for_accommodation_budget_set,
@@ -341,6 +385,7 @@ SELECT
 FROM MPsExpenditure
 WHERE Reason_for_accommodation_budget_set IN ('Standard budget for renting a property in the London area',
 	'Standard budget for renting a property outside the London area',
+	'Standard budget for renting a property in the London area, with an uplift to cover the cost of one dependant',
 	'Standard budget for an MP who owns their property and is claiming the associated costs only (such as utilities)',
 	'N/A')
 GROUP BY 
