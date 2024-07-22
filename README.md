@@ -18,7 +18,7 @@ Below you can find a diagram of the database used in this analysis.
 # Tools
 
 + Microsoft SQL Server Management Studios for data analysis - View [SQL Scripts](https://github.com/GleiAzevedo/Members-of-Parliament-Expenses/blob/main/MPs%20Expenditure%20queries.sql)
-+ Power BI for data visualization - View [Power BI dashboard]()
++ Power BI for data visualization
 
 # Key Questions Explored
 
