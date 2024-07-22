@@ -4,22 +4,22 @@ USE MPsExpenditure_22_23
 -- Add Foreign KEY to MPsExpenditure table
 
 ALTER TABLE MPsExpenditure
-ADD FOREIGN KEY (MPID) REFERENCES MPs(MPID)
+ADD FOREIGN KEY (MPID) REFERENCES MPs(MPID);
 
 ALTER TABLE MPsExpenditure
-ADD FOREIGN KEY (ConstituencyID) REFERENCES Regions(ConstituencyID)
+ADD FOREIGN KEY (ConstituencyID) REFERENCES Regions(ConstituencyID);
 
 -- Tables of the database:
 
 --1. Fact table with data about budgets and spending
 SELECT *
-FROM MPsExpenditure
+FROM MPsExpenditure;
 --2. Dimension table with data about the Members of Parliament
 SELECT *
-FROM MPs
+FROM MPs;
 --3. Dimension table with data about their Constituency
 SELECT *
-FROM Regions
+FROM Regions;
 
 -- Quantity of Members of Parliament by country
 
@@ -152,7 +152,6 @@ SELECT *
 FROM Total2_cte
 WHERE [Meet_the_budget?] LIKE ('MP did not meet the budget');
 
-
 SELECT
 	SpendID,
 	MPID,
@@ -173,7 +172,7 @@ SELECT
 		ELSE CONCAT('Not overspent - ',CAST(Remaining_winding_up_budget AS varchar)) 
 	END AS 'Overspent_on_the_winding_up_budget?'
 FROM MPsExpenditure
-WHERE MPID = 1392
+WHERE MPID = 1392;
 
 -- Top 10 MPs in total expenditure
 
@@ -390,4 +389,4 @@ WHERE Reason_for_accommodation_budget_set IN ('Standard budget for renting a pro
 	'N/A')
 GROUP BY 
 	Reason_for_accommodation_budget_set,
-	Accommodation_Budget
+	Accommodation_Budget;
