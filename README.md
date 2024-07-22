@@ -6,7 +6,7 @@ This project aims to analyse the annual budget, costs and claims made by each Me
 
 # Dataset description
 
-The dataset used in this project is mainly made up by the data avalaible on the IPSA website. IPSA, the Independent Parliamentary Standards Authority, is the independent body that regulates and administers the business costs and decides the pay and pensions of the elected MPs and their staff in the UK. Complementary to this data, it was necessary to create two other tables, with publicly available information, about the party each MP was affiliated, as well as the administrative geography of the constituency they represent.
+The dataset used in this project is mainly made up by the data avalaible on the [IPSA website](https://www.theipsa.org.uk/mp-staffing-business-costs/annual-publications). IPSA, the Independent Parliamentary Standards Authority, is the independent body that regulates and administers the business costs and decides the pay and pensions of the elected MPs and their staff in the UK. Complementary to this data, it was necessary to create two other tables, with publicly available information, about the party each MP was affiliated, as well as the administrative geography of the constituency they represent.
 Below you can find a diagram of the database used in this analysis.
 
 + The fact table contains the main information about each budget, the reason for that budget and its and expense (Office, staffing, winding-up, accommodation, travel and subsistence and other costs, the last two being unlimited) claimed by 661 MPs.
@@ -32,7 +32,6 @@ FROM Regions AS r
 	INNER JOIN MPsExpenditure AS mpe ON r.ConstituencyID = mpe.ConstituencyID
 GROUP BY
 	Country;
-
 ```
 ![MPs question 1](https://github.com/user-attachments/assets/5abac410-675a-47e9-bd26-118b9f6ea372)
 
@@ -42,7 +41,6 @@ The allocation of seats between each of the nations of the UK is calculated base
 2 - Most popular party by region
 
 ```
-
 WITH Party_cte AS (
 	SELECT
 		mp.Party,
@@ -63,7 +61,6 @@ SELECT TOP 10
 FROM Party_cte
 WHERE RK = 1
 ORDER BY Quantity_of_MPs DESC;
-
 ```
 ![MPs question 2](https://github.com/user-attachments/assets/4fa4fec9-df5d-443a-bfe5-a886eb183759)
 
@@ -95,15 +92,13 @@ SELECT
 	FORMAT(SUM(Accommodation_spend),'C','en-gb') AS [Accommodation_spend],
 	FORMAT(SUM(Travel_and_subsistence_uncapped+Other_costs_uncapped),'C','en-gb') AS [Uncapped_spend]
 FROM MPsExpenditure;
-
 -- Remaining
 
 SELECT
 	FORMAT(SUM(Remaining_office_budget),'C','en-gb') AS Remaining_office_budget,
 	FORMAT(SUM(Remaining_staffing_budget),'C','en-gb') AS Remaining_staffing_budget,
 	FORMAT(SUM(Remaining_accommodation_budget),'C','en-gb') AS Remaining_accommodation_budget
-FROM MPsExpenditure
-
+FROM MPsExpenditure;
 ```
 
 ![MPs question 3](https://github.com/user-attachments/assets/4fe459c7-6250-469c-8b49-afbb8146e2dd)
@@ -151,7 +146,6 @@ Total2_cte AS (
 SELECT *
 FROM Total2_cte
 WHERE [Meet_the_budget?] LIKE ('MP did not meet the budget');
-
 ```
 
 ![MPs question 4](https://github.com/user-attachments/assets/c3ac90b3-2bdf-4ea4-a4cf-44bb97296ffb)
@@ -180,7 +174,6 @@ SELECT
 	END AS 'Overspent_on_the_winding_up_budget?'
 FROM MPsExpenditure
 WHERE MPID = 1392
-
 ```
 
 ![MPs question 4 1](https://github.com/user-attachments/assets/74033556-aeb4-4afb-9fd6-59128c06d73b)
@@ -190,7 +183,6 @@ Only one MP did not meet the budget and the overspending occurred in the office 
 6 - Top 10 MPs in total expenditure
 
 ```
-
 SELECT
 	TOP 10 SpendID,
 	mp.MPname,
@@ -221,7 +213,6 @@ In the list above we have 8 MPs from England constituencies, 1 from Northern Ire
 7 - Maximum spent by category
 
 ```
-
 	--Office
 SELECT TOP 3
 	mp.MPID,
@@ -317,10 +308,14 @@ GROUP BY
 	Region,
 	Country
 ORDER BY [Max_spent] DESC;
-
 ```
 
 ![MPs question 6](https://github.com/user-attachments/assets/95f0459e-8972-4561-9726-0edfbca5436c)
 
 
 The result shows how nearly all the expenses are related to the London area. The exception to this happens in the uncapped expenses, where all MPs represent Scottish constituencies. It could be safe to say that the distance plays an important role in the travel expenses.
+
+# Power BI Dashboard
+
+![MPs dashboard](https://github.com/user-attachments/assets/28b45fac-e03c-4f9e-8b03-f758a12d380a)
+
